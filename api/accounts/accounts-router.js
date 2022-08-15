@@ -1,18 +1,33 @@
 const router = require("express").Router();
-
-const { getAll, getById, create, updateById, deleteById } = require("./accounts-model");
+//importing the model
+const { getAll, create, updateById, deleteById, getById } = require("./accounts-model");
+//importing middlewares
+const {
+  checkAccountId,
+  checkAccountNameUnique,
+  checkAccountPayload,
+} = require("./accounts-middleware");
 
 router.get("/", async (req, res, next) => {
-  const data = await getAll();
-  res.status(200).json(data);
+  try {
+    const data = await getAll();
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.get("/:id", (req, res, next) => {
-  // DO YOUR MAGIC
+router.get("/:id", checkAccountId, (req, res) => {
+  res.json(req.account);
 });
 
-router.post("/", (req, res, next) => {
+router.post("/", checkAccountNameUnique, checkAccountPayload, (req, res, next) => {
   // DO YOUR MAGIC
+  create(req.body)
+    .then((newAccount) => {
+      res.status(201).json(newAccount);
+    })
+    .catch(next);
 });
 
 router.put("/:id", (req, res, next) => {
@@ -31,7 +46,7 @@ router.use(
     next // eslint-disable-line
   ) => {
     // DO YOUR MAGIC
-    res.status(err.status || 500).res.json({
+    res.status(err.status || 500).json({
       customMessage: "server error, try again never",
       message: err.message,
     });

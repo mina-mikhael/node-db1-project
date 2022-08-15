@@ -4,8 +4,11 @@ const getAll = async () => {
   return await db("accounts");
 };
 
-const getById = (id) => {
-  // DO YOUR MAGIC
+const getById = async (id) => {
+  const data = await db("accounts").where("id", id).first();
+  if (!data) {
+    return null;
+  } else return data;
 };
 
 const create = (account) => {
