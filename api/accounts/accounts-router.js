@@ -1,6 +1,6 @@
 const router = require("express").Router();
 //importing the model
-const { getAll, create, updateById, deleteById, getById } = require("./accounts-model");
+const { getAll, create, updateById, deleteById } = require("./accounts-model");
 //importing middlewares
 const {
   checkAccountId,
