@@ -5,27 +5,23 @@ const checkAccountPayload = (req, res, next) => {
   // Note: you can either write "manual" validation logic
   // or use the Yup library (not currently installed)
   const { name, budget } = req.body;
-  if (!name || !budget) {
+  if (name === undefined || budget === undefined) {
     res.status(400).json({
       message: "name and budget are required",
     });
-    return;
   } else if (name.trim().length > 100 || name.trim().length < 3) {
     res.status(400).json({
       message: "name of account must be between 3 and 100",
     });
-    return;
     // eslint-disable-next-line use-isnan
-  } else if (typeof parseInt(budget) !== "number" || isNaN(budget)) {
+  } else if (isNaN(budget) || typeof budget !== "number") {
     res.status(400).json({
       message: "budget of account must be a number",
     });
-    return;
   } else if (parseInt(budget) < 0 || parseInt(budget) > 1000000) {
     res.status(400).json({
       message: "budget of account is too large or too small",
     });
-    return;
   } else {
     req.payload = {
       name: name.trim(),
